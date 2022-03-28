@@ -1,0 +1,110 @@
+[
+    {
+        "sourceName": "sourceName",
+        "incident_ID": "incidentUUID",
+        "totalOccurences": 0,
+        "alertStatus": "low",
+        "incidentPassthrough": {
+            "items": {
+                "updatedAt": 1499839877,
+                "sourceName": "guest.dataForLast_7daysOnly",
+                "equation": {
+                    "children": [
+                        {
+                            "children": [
+                                {
+                                    "isRealized": false,
+                                    "type": "LL_UNSUPPORTED_OBJECT_TYPE|Port",
+                                    "value": "IDREF:{http://hailataxii.com}Observable-fc5c11a8-b038-4abc-9641-2b495c78774a"
+                                }
+                            ],
+                            "condition": "EQUALS",
+                            "isRealized": false,
+                            "applyCondition": "ANY"
+                        },
+                        {
+                            "children": [
+                                {
+                                    "isRealized": false,
+                                    "type": "DomainNameObjectType",
+                                    "value": "domainNameValue"
+                                }
+                            ],
+                            "condition": "EQUALS",
+                            "isRealized": false,
+                            "applyCondition": "ANY"
+                        },
+                        {
+                            "children": [
+                                {
+                                    "isRealized": true,
+                                    "type": "IPV_4_ADDR",
+                                    "value": "ipAddressValue"
+                                }
+                            ],
+                            "condition": "EQUALS",
+                            "isRealized": true,
+                            "applyCondition": "ANY"
+                        }
+                    ],
+                    "isRealized": true,
+                    "op": "OR"
+                }
+            }
+        }
+    },
+    {
+        "sourceName": "sourceName",
+        "incident_ID": "incidentUUID",
+        "totalOccurences": 0,
+        "alertStatus": "low",
+        "incidentPassthrough": {
+            "items": {
+                "updatedAt": 1499839877,
+                "sourceName": "guest.dataForLast_7daysOnly",
+                "equation": {
+                    "children": [
+                        {
+                            "children": [
+                                {
+                                    "isRealized": false,
+                                    "type": "LL_UNSUPPORTED_OBJECT_TYPE|Port",
+                                    "value": "IDREF:{http://hailataxii.com}Observable-fc5c11a8-b038-4abc-9641-2b495c78774a"
+                                }
+                            ],
+                            "condition": "EQUALS",
+                            "isRealized": false,
+                            "applyCondition": "ANY"
+                        },
+                        {
+                            "children": [
+                                {
+                                    "isRealized": false,
+                                    "type": "DomainNameObjectType",
+                                    "value": "domainNameValue"
+                                }
+                            ],
+                            "condition": "EQUALS",
+                            "isRealized": false,
+                            "applyCondition": "ANY"
+                        },
+                        {
+                            "children": [
+                                {
+                                    "isRealized": true,
+                                    "type": "IPV_4_ADDR",
+                                    "value": "ipAddressValue"
+                                }
+                            ],
+                            "condition": "EQUALS",
+                            "isRealized": true,
+                            "applyCondition": "ANY"
+                        }
+                    ],
+                    "isRealized": true,
+                    "op": "OR"
+                }
+            }
+        }
+    }
+]

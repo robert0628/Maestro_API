@@ -1,0 +1,113 @@
+{
+    "devices":
+    [
+        {
+            "device_type":"cisco_ftd",
+            "ip": "71.25.48.225",
+            "username": "labadmin",
+            "password": "March2022!",
+            "secret": "March2022!",
+            "port": 2301,
+            "commands":
+            [
+                "system support diagnostic-cli",
+                "enable",
+                "",
+                "copy /pcap capture:pcap-02 scp://labadmin:Friday2022!#@20.25.47.175:/pcap_1.pcap",
+                "",
+                "",
+                "",
+                ""
+            ]
+        },
+        {
+            "device_type":"cisco_ftd",
+            "ip": "52.149.215.18",
+            "username": "labadmin1",
+            "password": "March2022!",
+            "secret": "March2022!",
+            "port": 22,
+            "commands":
+            [
+                "system support diagnostic-cli",
+                "enable",
+                "",
+                "copy /pcap capture:pcap-02 scp://labadmin:Friday2022!#@20.25.47.175:/pcap_2.pcap",
+                "",
+                "",
+                "",
+                ""
+            ]
+        },
+        {
+        "device_type":"cisco_ftd",
+        "ip": "71.25.48.225",
+        "username": "labadmin",
+        "password": "March2022!",
+        "secret": "March2022!",
+        "port": 2303,
+        "commands":
+        [
+            "system support diagnostic-cli",
+            "enable",
+            "",
+            "copy /pcap capture:pcap-02 scp://labadmin:Friday2022!#@20.25.47.175:/pcap_3.pcap",
+            "",
+            "",
+            "",
+            ""
+        ]
+    },
+        {
+            "device_type":"cisco_ftd",
+            "ip": "71.25.48.225",
+            "username": "labadmin",
+            "password": "March2022!",
+            "secret": "March2022!",
+            "port": 2304,
+            "commands":
+            [
+                "system support diagnostic-cli",
+                "enable",
+                "",
+                "copy /pcap capture:pcap-02 scp://labadmin:Friday2022!#@20.25.47.175:/pcap_4.pcap",
+                "",
+                "",
+                "",
+                ""
+            ]
+        },
+        {
+            "device_type":"cisco_ftd",
+            "ip": "71.25.48.225",
+            "username": "labadmin",
+            "password": "March2022!",
+            "secret": "March2022!",
+            "port": 2305,
+            "commands":
+            [
+                "system support diagnostic-cli",
+                "enable",
+                "",
+                "copy /pcap capture:pcap-02 scp://labadmin:Friday2022!#@20.25.47.175:/pcap_5.pcap",
+                "",
+                "",
+                "",
+                ""
+            ]
+        }
+    ],
+    "files":[
+        "pcap_1.pcap",
+        "pcap_2.pcap",
+        "pcap_3.pcap",
+        "pcap_4.pcap",
+        "pcap_5.pcap"
+    ],
+    "ftp":{
+        "hostname":"20.25.47.175",
+        "username":"labadmin",
+        "password":"Friday2022!#",
+        "port":22
+    }
+}

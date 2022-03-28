@@ -1,0 +1,64 @@
+{
+    "commonDBs":[
+        {
+            "name":"MaxDB",
+            "ports": ["7210"]
+        },
+        {
+            "name":"MySQL",
+            "ports": ["3306"]
+        },
+        {
+            "name":"OracleDB",
+            "ports":["1521","1830"]
+        },
+        {
+            "name":"PostgreSQL", 
+            "ports":["5432"]
+        },
+        {  
+            "name":"SQLServer", 
+            "ports":["1433","1434"]
+        },
+        {
+            "name":"ArangoDB", 
+            "ports":["8529"]
+        },
+        {
+            "name":"Cassandra", 
+            "ports":["7000","7001","9042"]
+        },
+        {
+            "name":"CouchDB", 
+            "ports": ["5984"]
+        },
+        {
+            "name":"Elasticsearch", 
+            "ports": ["9200","9300"]
+        },
+        {
+            "name":"MongoDB", 
+            "ports":["27017","27018","27019","28017"]
+        },
+        {
+            "name":"Neo4J", 
+            "ports":["7473","7474"]
+        },
+        {
+            "name":"Redis", 
+            "ports": ["6379"]
+        },
+        {
+            "name":"Riak", 
+            "ports":["8087","8098"]
+        },
+        {
+            "name":"RethinkDB", 
+            "ports":["8080","28015","29015"]
+        },
+        {
+            "name":"Solr", 
+            "ports": ["7574","8983"]
+        }
+    ]
+  }

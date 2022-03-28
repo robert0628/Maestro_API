@@ -1,0 +1,27 @@
+Rule1:
+(if there are more than 2 connections onto a node ~meaning more than 2 edges, without duplicates~, add it to the list. Our current data set only has this one node that corresponds to this criteria)
+ 
+['172.31.98.4:56132']
+
+______________________
+
+Rule3 applied with Rule1 as a parameter:
+(if the nodes given as a parameter, in this case, the one from before, has more than 2 connections with each of its connected nodes ~meaning duplicate connections~, it matches the criteria) 
+ 
+['172.31.98.4:56132']
+
+______________________
+
+Rule2 applied with Rule1 as a parameter (where I added by force '8080' and '8005' as ports because none of the ports in the example were in the list of ports from the web):
+(if the nodes given as a parameter, in this case, the one from before, have, on their IPs, any of the specific ports specified in the Confluence Document, add it to this list of Dictionaries)
+
+example:
+[
+{service_type1: [(ip1:port1, protocol), (ip1:port2, protocol)]},
+ {service_type2: ...}
+ {service_type3: ...}
+ {service_type4: ...}
+]
+
+output from our data set: 
+[{'Application/Web Servers': [('172.31.98.4:8080', 'Tomcat Startup'), ('172.31.98.4:8080', 'GlassFish HTTP'), ('172.31.98.4:8080', 'Jetty'), ('172.31.98.4:8080', 'JBoss Admin Console'), ('172.31.98.4:8080', 'Alfresco Explorer/Share'), ('172.31.98.4:8080', 'Jenkins'), ('172.31.98.4:8080', 'HTTP'), ('172.31.98.4:8005', 'Tomcat Shutdown')]}]

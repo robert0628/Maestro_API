@@ -1,13 +1,49 @@
 import html
+import requests
 import datetime
 from colour import Color
 from netaddr import IPNetwork
+from .RCAA_functions import generate_token
+from requests.auth import HTTPBasicAuth
+
+networks_url = 'https://71.25.48.227/api/fmc_config/v1/domain/{}/object/networks?limit=1000&expanded=true'
+
+def get_networks():
+    accesstoken, refreshtoken, DOMAIN_UUID = generate_token()
+
+    headers = {
+        'accept' : 'application/json',
+        'X-auth-access-token': accesstoken
+    }
+
+    networks_response = requests.get(networks_url.format(DOMAIN_UUID), verify = False, headers = headers)
+    networks_response = networks_response.json()
+
+    return networks_response
 
 def auto_graph_generate_nodes(nodes, json_file):
     incoming_data = {}
     outgoing_data = {}
     incoming_connections = {}
     outgoing_connections = {}
+    networks = {}
+
+    networks_response = get_networks()
+
+    for item in networks_response['items']:
+        addresses = []
+        addr, mask = item['value'].split('/')
+
+        #TODO:find a better way to filter
+        if mask != '24':
+            continue
+        
+        network = IPNetwork(item['value'])
+        generator = network.iter_hosts()
+        for elem in generator:
+            addresses.append(str(elem))
+        
+        networks[item['value']] = addresses
 
     for item in json_file['items']:
         if item['destinationIp'] not in incoming_data.keys():
@@ -63,8 +99,12 @@ def auto_graph_generate_nodes(nodes, json_file):
 
         node['ip_scope'] = '.'.join(lst_ip)
         node['ipGateway'] = addresses[0]
-        node['networkGroup'] = '' 
-        #TODO: get network group from somewhere
+
+        node['networkGroup'] = ''
+
+        for net in networks.keys():
+            if node['ip'] in networks[net]:
+                node['networkGroup'] = net
 
         if node['ip'] in incoming_data.keys():
             node['l_incomingData'] = incoming_data[node['ip']]
@@ -121,6 +161,24 @@ def live_graph_generate_nodes(nodes, json_file):
     outgoing_data = {}
     incoming_connections = {}
     outgoing_connections = {}
+    networks = {}
+    
+    networks_response = get_networks()
+
+    for item in networks_response['items']:
+        addresses = []
+        addr, mask = item['value'].split('/')
+
+        #TODO:find a better way to filter
+        if mask != '24':
+            continue
+        
+        network = IPNetwork(item['value'])
+        generator = network.iter_hosts()
+        for elem in generator:
+            addresses.append(str(elem))
+        
+        networks[item['value']] = addresses
 
     for item in json_file['items']:
         if item['destinationIp'] not in incoming_data.keys():
@@ -176,8 +234,11 @@ def live_graph_generate_nodes(nodes, json_file):
 
         node['ip_scope'] = '.'.join(lst_ip)
         node['ipGateway'] = addresses[0]
-        node['networkGroup'] = '' 
-        #TODO: get network group from somewhere
+        node['networkGroup'] = ''
+
+        for net in networks.keys():
+            if node['ip'] in networks[net]:
+                node['networkGroup'] = net
 
         if node['ip'] in incoming_data.keys():
             node['l_incomingData'] = incoming_data[node['ip']]

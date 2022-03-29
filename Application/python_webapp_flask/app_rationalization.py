@@ -12,20 +12,12 @@ productivity_mapping = {
   'VERY_HIGH': 5
 }
 
-risk_mapping = {
-  'VERY_LOW': 1, 
-  'LOW': 2,
-  'MEDIUM': 2.5,
-  'HIGH': 4.5,
-  'VERY_HIGH': 5
-}
+risk_mapping = productivity_mapping
 
 def create_application_item(data):
     try:
 
-      applicationTypes = '';
-      description = '';
-      productivity = ''
+      applicationTypes, description, productivity = '', '', ''
 
       if 'applicationTypes' in data.keys():
         for el_type in data['applicationTypes']:
@@ -79,7 +71,7 @@ def create_application_item(data):
       return element
 
     except Exception as e:
-      print('[ERROR]Failed to parse data in create_application_item')
+      print(e, 'Failed to parse data in create_application_item')
       return {}
 
 
@@ -91,14 +83,13 @@ def app_rationalization_add_items(accesstoken, DOMAIN_UUID):
         'X-auth-access-token': accesstoken
     }
 
-    applications_api = fmc_api_applications.format(DOMAIN_UUID)
-    sla_monitor_api = fmc_api_sla_monitors.format(DOMAIN_UUID)
+    applications_api = sla_monitor_api = fmc_api_applications.format(DOMAIN_UUID)
 
     response = requests.get(applications_api, verify = False, headers = headers)
     application_dict = response.json()
 
     if len(application_dict['items']) == 0:
-      return items
+      return {}
 
     for item in application_dict['items']:
       all_applications.append(create_application_item(item))

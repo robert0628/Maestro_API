@@ -204,6 +204,7 @@ def reformat_mono2micro(prev_data):
                 "id": elem["id"],
                 "groupID": elem["cluster"] - 1,  
                 "port" : str(elem["id"]).split(':')[1],
+                'name' : elem['name']
             }
             if not elem["cluster"] - 1 in groupId:
                 groupId.append(elem["cluster"] - 1)

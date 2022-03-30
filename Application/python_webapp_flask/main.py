@@ -58,6 +58,15 @@ def generate_data(boolean = True):
     response_data = apply_separation_rule(response_data)
     response_data = apply_rule2(response_data, select_microservice(response, 2))
 
+    mapped_names = {}
+    for item in response['items']:
+        source = item['sourceIp'] + ":" + item['sourcePort']
+        destination = item['destinationIp'] + ":" + item['destinationPort']
+        mapped_names[source] = item['hostName']
+        mapped_names[destination] = ''
+    for node in response_data[0]['nodes']:
+        node['name'] = mapped_names[node['id']]
+
     if(boolean):
         response_data[0], node_connections, max_edges = plot_nodes(response_data[0])
         response_data[0] = index_list(response_data[0])
@@ -70,6 +79,7 @@ def generate_data(boolean = True):
 
 def generate_mono_2_micro():
     prev_data, json_connections = generate_data()
+
     prev_data = prev_data[0]
     response_data = []
     nodes, links = reformat_mono2micro(prev_data)
@@ -216,6 +226,17 @@ def mono_2_micro():
         add_links_hosts_datasets(response_data)
         add_apps_nodes(response_data)
         add_hosts_nodes(response_data)
+        for elem in response_data[0]['clusters']:
+            for node in elem['nodes']:
+                try:
+                    name = node['name']
+                except:
+                  node['name'] = ''
+        for node in response_data[0]['nodes']:
+            try:
+                name = node['name']
+            except:
+                node['name'] = ''
         
         return jsonify(response_data[0])
     else:

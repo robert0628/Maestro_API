@@ -7,6 +7,7 @@ import requests
 import yaml
 
 from python_webapp_flask.data_insight import augment_data
+from python_webapp_flask import azure_cog_search
 
 from .updating_links import *
 from .rules import *
@@ -208,6 +209,34 @@ def live_graph():
         resp = jsonify(success=False)
         resp.status_code = 405
         return resp
+
+
+@app.route('/api/congnitve_search', methods=['POST'])
+@cross_origin()
+def cognitve_search():
+    if request.method == 'POST':
+        
+        response = {}
+
+        params = request.json
+        search_text = params["searchText"]
+
+        result = azure_cog_search.search(search_text=search_text)        
+        
+        documents = []
+        for item in result:
+            documents.append(item)
+        
+        response["count"] = result.get_count()
+        response["data"] = documents
+
+        return jsonify(response)
+    else:
+        resp = jsonify(success=False)
+        resp.status_code = 405
+        return resp
+
+
 
 @app.route('/api/mono_2_micro', methods=['GET'])
 @cross_origin()

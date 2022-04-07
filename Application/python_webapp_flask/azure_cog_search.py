@@ -16,10 +16,9 @@ from azure.search.documents.indexes.models import (
 service_name = "nh-inteloo-cog-search"
 admin_key = "E35B1A7FDF7983D36945EA94F273AEA4"
 
-index_name = "azureblob-index"
 
 
-def search(search_text = '*'):
+def search(search_text = '*', index_name="azureblob-index"):
     # Create an SDK client
     endpoint = "https://{}.search.windows.net/".format(service_name)
 

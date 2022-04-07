@@ -219,8 +219,9 @@ def cognitve_search():
 
         params = request.json
         search_text = params["searchText"]
+        index_name = params["indexName"]
 
-        result = azure_cog_search.search(search_text=search_text)        
+        result = azure_cog_search.search(search_text=search_text, index_name=index_name)        
         
         documents = []
         for item in result:

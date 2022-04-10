@@ -2,6 +2,8 @@ import json
 
 def vm_recommendation(response_data, initial_data):
     dic_nodes = {}
+    file = open("specs.json", 'r')
+    specs = json.load(file)
     for node in response_data[0]["nodes"]:
         if "clusterID" in node:
             if not node["clusterID"] in dic_nodes.keys():
@@ -11,12 +13,10 @@ def vm_recommendation(response_data, initial_data):
     dic_cluster_traffic = {}
     dic_recommendations = {}
     dic_conditions = {}
-    with open("specs.json" ,'r') as g:
-        specs = json.load(g)
-        for item in specs["Items"]:
-            if not float(item["RAM"].split(" ")[0]) in dic_conditions.keys():
-                dic_conditions.update({float(item["RAM"].split(" ")[0]) : []})
-            dic_conditions[float(item["RAM"].split(" ")[0])].append(item["armskuName"])
+    for item in specs["Items"]:
+        if not float(item["RAM"].split(" ")[0]) in dic_conditions.keys():
+            dic_conditions.update({float(item["RAM"].split(" ")[0]) : []})
+        dic_conditions[float(item["RAM"].split(" ")[0])].append(item["armskuName"])
     traffic = 0
     for cluster in dic_nodes:
         for ip in dic_nodes[cluster]:      
@@ -29,22 +29,20 @@ def vm_recommendation(response_data, initial_data):
     min_vm_name = ""
     for cluster in dic_cluster_traffic:
         for entry in dic_conditions:
-            if dic_cluster_traffic[cluster] < entry*1024:
-                with open("specs.json" ,'r') as file:
-                    data = json.load(file)
-                    for item in data["Items"]:
-                        for key in dic_conditions:
-                            if item["armskuName"] in dic_conditions[key]:
-                                if item["retailPrice"] < min_unit_price:
-                                    min_unit_price = item["retailPrice"]
-                                    min_vm_name = item["armskuName"]
+            if dic_cluster_traffic[cluster] < entry*1024*1024:
+                data = specs
+                for item in data["Items"]:
+                    for key in dic_conditions:
+                        if item["armskuName"] in dic_conditions[key]:
+                            if item["retailPrice"] < min_unit_price:
+                                min_unit_price = item["retailPrice"]
+                                min_vm_name = item["armskuName"]
         dic_recommendations[cluster] = (min_unit_price, min_vm_name)
-    with open("specs.json", 'r') as f:
-        data = json.load(f)
-        for item in data["Items"]:
-            for cluster in dic_recommendations:
-                if item["armskuName"] in dic_recommendations[cluster]:
-                    dic_recommendations[cluster] = item
+    data = specs
+    for item in data["Items"]:
+        for cluster in dic_recommendations:
+            if item["armskuName"] in dic_recommendations[cluster]:
+                dic_recommendations[cluster] = item
 
     hardware_recommendations_response = []
     for key in dic_recommendations:
@@ -59,5 +57,6 @@ def vm_recommendation(response_data, initial_data):
         if not element_dict:
             continue
         hardware_recommendations_response.append(element_dict)
-    
+
+    file.close()
     return hardware_recommendations_response

@@ -69,7 +69,7 @@ def plot_nodes(response_data):
         for nodes in data_connections[i]:
             new_data = []
             for ids in nodes:
-                new_data = recursive_links_search(ids, new_data, links)
+                new_data = linear_links_search(ids, links)
             nodes.append(new_data)
 
     max = 0
@@ -105,29 +105,22 @@ def plot_nodes(response_data):
 
     return(response_data, connections, max_connections)
 
-def recursive_links_search(id_head, current_list, links, saw_nodes = []):
+def linear_links_search(id_head, links):
+    next_nodes = []
+    next_nodes.append(id_head)
     new_links = links.copy()
-    new_list = []
-    for connection in new_links:
-        if(connection["target"] == id_head and connection["target"] not in saw_nodes):
-            saw_nodes.append(connection["target"])
-            source = connection["source"]
-        elif(connection["source"] == id_head and connection["target"] not in saw_nodes):
-            saw_nodes.append(connection["source"])
-            source = connection["target"]
-        else:
-            continue
-        current_list.append(source)
-        new_links.remove(connection)
-        new_list = (recursive_links_search(source, current_list, new_links, saw_nodes))
+    connection_nodes = []
+    while len(next_nodes)>0:
+        id_head = next_nodes.pop()
+        for connection in new_links:
+            if connection["target"] == id_head and connection["source"] not in next_nodes and connection["source"] not in connection_nodes:
+                next_nodes.append(connection["source"])
+                connection_nodes.append(connection["source"])
+            if connection["source"] == id_head and connection["target"] not in next_nodes and connection["target"] not in connection_nodes:
+                next_nodes.append(connection["target"])
+                connection_nodes.append(connection["target"])
 
-    for connection in new_links:
-        if(connection["target"] == id_head):
-            new_list.append(connection["source"])
-
-    current_list.extend(new_list)
-    current_list = list(set(current_list))
-    return current_list
+    return connection_nodes
 
 def index_list(response_data):
     i = 0

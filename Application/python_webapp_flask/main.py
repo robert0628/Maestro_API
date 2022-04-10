@@ -22,6 +22,7 @@ from .update_nodes import *
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from .scripts.connect_ssh import get_new_jsons
+
 get_new_jsons()
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=get_new_jsons, trigger="interval", minutes=10)

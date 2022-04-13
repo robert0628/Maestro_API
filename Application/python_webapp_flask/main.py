@@ -211,7 +211,7 @@ def live_graph():
         return resp
 
 
-@app.route('/api/congnitve_search', methods=['POST'])
+@app.route('/api/search', methods=['POST'])
 @cross_origin()
 def cognitve_search():
     if request.method == 'POST':

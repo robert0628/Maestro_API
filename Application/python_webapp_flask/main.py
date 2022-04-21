@@ -221,8 +221,10 @@ def cognitve_search():
         params = request.json
         search_text = params["searchText"]
         index_name = params["indexName"]
+        page_size = params['pageSize'] if 'pageSize' in params and params['pageSize'] else 10
+        page_no = params['pageNo'] if 'pageNo' in params and params['pageNo'] else 1
 
-        result = azure_cog_search.search(search_text=search_text, index_name=index_name)        
+        result = azure_cog_search.search(search_text=search_text, index_name=index_name, page_size=page_size, page_no=page_no)        
         
         documents = []
         for item in result:

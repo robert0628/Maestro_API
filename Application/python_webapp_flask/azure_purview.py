@@ -15,7 +15,6 @@ aad_client_credentials = ClientSecretCredential(tenantId, clientId, clientSecret
 token_url = 'https://login.microsoftonline.com//api/{}/oauth2/v2.0/token'.format(tenantId)
 
 guid = ""
-scans = ""
 
 accountUrl = 'https://democui.purview.azure.com/account?api-version=2019-11-01-preview'
 collectionsUrl = "https://democui.purview.azure.com/collections?api-version=2019-11-01-preview"

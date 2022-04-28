@@ -18,7 +18,7 @@ from .data_insight import *
 from .roa import *
 from .app_rationalization import *
 from .RCAA_functions import *
-from .roa import *
+from .azure_purview import *
 from .update_nodes import *
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -354,3 +354,16 @@ def app_rationalization():
         resp = jsonify(success=False)
         resp.status_code = 405
         return resp
+
+@app.route('/api/cui', methods=['GET'])
+@cross_origin()
+def cui():
+    if request.method == 'GET':
+        data = create_cui_stucture()
+        resp = jsonify(data)
+        return resp
+        #return jsonify(response)
+    else:
+        resp = jsonify(success=False)
+        resp.status_code = 405
+        return resp        

@@ -54,7 +54,7 @@ def get_new_jsons():
     try:
         start = time.time()
 
-        get_new_pcaps()
+        # get_new_pcaps()
         get_cisco_asa_pcap()
         generate_json()
 

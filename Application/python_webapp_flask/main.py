@@ -20,6 +20,7 @@ from .app_rationalization import *
 from .RCAA_functions import *
 from .azure_purview import *
 from .update_nodes import *
+from .azure_purview_atlas import *
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from .scripts.connect_ssh import get_new_jsons
@@ -366,4 +367,18 @@ def cui():
     else:
         resp = jsonify(success=False)
         resp.status_code = 405
-        return resp        
+        return resp
+
+@app.route('/api/cui/atlas', methods=['GET'])
+@cross_origin()
+def atlas():
+    if request.method == 'GET':
+        data = atlas_api_get_type_def()
+        #resp = jsonify(success=True)
+        resp = jsonify(data)
+        return resp
+        #return jsonify(response)
+    else:
+        resp = jsonify(success=False)
+        resp.status_code = 405
+        return resp

@@ -36,6 +36,25 @@ def atlas_api_get_type_def():
     all_type_defs = client.get_all_typedefs()
     return all_type_defs
 
+def atlas_api_search(query):
+    client = atlas_client_connection()
+    results = []
+    if query is not None:
+        search_by = query
+        search = client.discovery.search_entities(search_by)
+        if search is not None:
+            for entity in search:
+                results.append(entity)
+    else:
+        query = ""
+        search = client.discovery.search_entities(search_by)
+        if search is not None:
+            for entity in search:
+                results.append(entity)
+    return results
+    # search = client.discovery.search_entities("name:demo*")
+    # search = client.discovery.search_entities("qualifiedName:demo*")
+
 def atlas_api_get_entity_guids():
     all_type_defs = atlas_api_get_type_def()
 
@@ -64,21 +83,20 @@ def atlas_api_get_entity_guids():
         elif alist == "entityDefs":
             entityDefs.append(all_type_defs[alist])
         elif alist == "structDefs":
-            structDefs.append(all_type_defs[alist])                   
+            structDefs.append(all_type_defs[alist])
+    for list in enumDefs:
+        for item in list:
+            enumDefsGuids += item["guid"]
+    print(enumDefsGuids)                   
     return
 
-def atlas_api_get_def_guids():
-    client = atlas_client_connection()
-    # Get Specific Entities
-    list_of_entities = client.get_entity(guid=guids)
-    return
+entity_obj = {}
+entity_obj["name"] = "Cui Sqline Demo table"
+entity_obj["typeName"] = "demoSqlite_table"
+entity_obj["qualified_name"] = "somedb.schema.demoSqlitetable"
+entity_obj["guid"] = -1000
 
-obj = {}
-obj["name"] = "Cui Sqline Demo table"
-obj["typeName"] = "demoSqlite_table"
-obj["qualified_name"] = "somedb.schema.demoSqlitetable"
-obj["guid"] = -1000
-
+obj = entity_obj
 
 def atlas_api_create_entity(client, obj):
     # Create a new entity

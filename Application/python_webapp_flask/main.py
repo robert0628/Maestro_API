@@ -382,3 +382,28 @@ def atlas():
         resp = jsonify(success=False)
         resp.status_code = 405
         return resp
+
+@app.route('/api/cui/atlas/search', methods=['POST'])
+@cross_origin()
+def atlas_search():
+    if request.method == 'POST':
+        
+        response = {}
+
+        params = request.json
+        search_text = params["searchText"]
+        search_type = params["searchType"]
+
+        result = atlas_api_search(search_text)
+    
+        # for item in result:
+        #     atlas_search.append(item)
+        
+        #response["count"] = result.get_count()
+        response["results"] = result
+
+        return jsonify(response)
+    else:
+        resp = jsonify(success=False)
+        resp.status_code = 405
+        return resp

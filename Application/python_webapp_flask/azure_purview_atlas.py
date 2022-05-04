@@ -6,8 +6,11 @@ import json
 from requests.auth import HTTPBasicAuth
 
 from pyapacheatlas.auth import ServicePrincipalAuthentication
-from pyapacheatlas.core import PurviewClient
-from pyapacheatlas.core import AtlasEntity
+from pyapacheatlas.core import PurviewClient, AtlasEntity, AtlasProcess
+from pyapacheatlas.core.util import AtlasException
+from pyapacheatlas.core.glossary import PurviewGlossaryTerm
+
+
 
 tenantId = "ababe4b8-e9ca-48b1-910a-9a632c08bff2"
 clientId = "d7b2cf84-1728-4ebc-a7ed-f2a4f1fa8dfe"
@@ -55,6 +58,36 @@ def atlas_api_search(query):
     # search = client.discovery.search_entities("name:demo*")
     # search = client.discovery.search_entities("qualifiedName:demo*")
 
+def atlas_api_read_classification():
+    client = atlas_client_connection()
+    try:
+        single_class_check = client.get_entity_classification(
+            guid="b58fc81e-a85f-4dfc-aad1-ee33b3421b87",
+            classificationName="MICROSOFT.PERSONAL.IPADDRESS"
+        )
+        print(json.dumps(single_class_check, indent=2))
+    except AtlasException as e:
+        print("The provided classification was not found on the provied entity.")
+        print(e)
+
+    # You can also get ALL of the classifications from a given entity
+    all_class_check = client.get_entity_classifications(
+        guid="b58fc81e-a85f-4dfc-aad1-ee33b3421b83"
+    )
+    print(json.dumps(all_class_check, indent=2))
+def atlas_api_glosary(glossary):
+    client = atlas_client_connection()
+    if glossary is not None:
+        custom_glossary = client.glossary.get_glossary(glossary)
+        return custom_glossary
+    else:
+        default_glossary = client.glossary.get_glossary()
+        return default_glossary
+
+def atlas_api_glosary_terms(query):
+    client = atlas_client_connection()
+    glossary_term = client.glossary.get_term(query)
+    return glossary_term
 def atlas_api_get_entity_guids():
     all_type_defs = atlas_api_get_type_def()
 

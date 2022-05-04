@@ -21,6 +21,7 @@ from .RCAA_functions import *
 from .azure_purview import *
 from .update_nodes import *
 from .azure_purview_atlas import *
+from .azure_purview_catalog import *
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from .scripts.connect_ssh import get_new_jsons
@@ -461,3 +462,35 @@ def atlas_search():
         resp = jsonify(success=False)
         resp.status_code = 405
         return resp
+
+@app.route('/api/cui/purview', methods=['GET','POST','DELETE'])
+@cross_origin()
+def purview_api_catalog():
+    if request.method == 'GET':
+
+        data = purview_catalog()
+        #resp = jsonify(success=True)
+        resp = jsonify(data)
+        return resp
+        #return jsonify(response)  
+    if request.method == 'POST':
+        
+        response = {}
+
+        params = request.json
+        search_text = params["searchText"]
+        search_type = params["searchType"]
+
+        result = atlas_api_search(search_text)
+    
+        # for item in result:
+        #     atlas_search.append(item)
+        
+        #response["count"] = result.get_count()
+        response["results"] = result
+
+        return jsonify(response)
+    else:
+        resp = jsonify(success=False)
+        resp.status_code = 405
+        return resp        

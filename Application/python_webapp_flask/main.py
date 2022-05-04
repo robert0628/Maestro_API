@@ -25,10 +25,10 @@ from .azure_purview_atlas import *
 from apscheduler.schedulers.background import BackgroundScheduler
 from .scripts.connect_ssh import get_new_jsons
 
-get_new_jsons()
-scheduler = BackgroundScheduler()
-scheduler.add_job(func=get_new_jsons, trigger="interval", minutes=10)
-scheduler.start()
+# get_new_jsons()
+# scheduler = BackgroundScheduler()
+# scheduler.add_job(func=get_new_jsons, trigger="interval", minutes=10)
+# scheduler.start()
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -382,6 +382,60 @@ def atlas():
         resp = jsonify(success=False)
         resp.status_code = 405
         return resp
+
+@app.route('/api/cui/atlas/glossary', methods=['GET', 'POST', 'DELETE'])
+@cross_origin()
+def atlas_glossary():
+    if request.method == 'GET':
+        glossary = "Glossary"
+        data = atlas_api_glosary(glossary)
+        #resp = jsonify(success=True)
+        resp = jsonify(data)
+        return resp
+        #return jsonify(response)
+    elif request.method == 'POST':
+
+        response = {}
+
+        params = request.json
+        
+        input_field1 = params["searchText"]
+        input_field2 = params["searchType"]
+
+        data = atlas_api_glosary(input_field1)
+        #resp = jsonify(success=True)
+        resp = jsonify(data)
+        return resp
+        #return jsonify(response)
+    else:
+        resp = jsonify(success=False)
+        resp.status_code = 405
+        return resp
+
+@app.route('/api/cui/atlas/glossary/terms', methods=['GET', 'POST', 'DELETE'])
+@cross_origin()
+def atlas_glossary_terms():
+    if request.method == 'GET':
+        glossary = "Glossary"
+        data = atlas_api_glosary(glossary)
+        #resp = jsonify(success=True)
+        resp = jsonify(data)
+        return resp
+        #return jsonify(response)
+    elif request.method == 'POST':
+
+        response = {}
+        params = request.json       
+        input_field1 = params["guid"]
+        data = atlas_api_glosary_terms(input_field1)
+        #resp = jsonify(success=True)
+        resp = jsonify(data)
+        return resp
+        #return jsonify(response)
+    else:
+        resp = jsonify(success=False)
+        resp.status_code = 405
+        return resp        
 
 @app.route('/api/cui/atlas/search', methods=['POST'])
 @cross_origin()

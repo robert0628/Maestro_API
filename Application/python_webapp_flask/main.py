@@ -5,6 +5,7 @@ from requests.auth import HTTPBasicAuth
 import json
 import requests
 import yaml
+from werkzeug.exceptions import HTTPException
 
 from python_webapp_flask.data_insight import augment_data
 from python_webapp_flask import azure_cog_search
@@ -454,7 +455,7 @@ def atlas_search():
         # for item in result:
         #     atlas_search.append(item)
         
-        #response["count"] = result.get_count()
+        response["count"] = result.get_count()
         response["results"] = result
 
         return jsonify(response)
@@ -468,8 +469,191 @@ def atlas_search():
 def purview_api_catalog():
     if request.method == 'GET':
 
-        data = purview_catalog()
+        entity = ""
+        obj = {}
+        guid = ""
+        data = purview_catalog_entity(entity, obj, guid)
+        resp = jsonify(success=True)
+        #resp = jsonify(data)
+        return resp
+        #return jsonify(response)  
+    if request.method == 'POST':
+        
+        response = {}
+
+        params = request.json
+        search_text = params["searchText"]
+        search_type = params["searchType"]
+
+        result = atlas_api_search(search_text)
+    
+        # for item in result:
+        #     atlas_search.append(item)
+        
+        #response["count"] = result.get_count()
+        response["results"] = result
+
+        return jsonify(response)
+    else:
+        resp = jsonify(success=False)
+        resp.status_code = 405
+        return resp
+
+@app.route('/api/cui/purview/glossary', methods=['GET','POST','DELETE'])
+@cross_origin()
+def purview_api_glossary():
+    action = ""
+    id = ""
+    args = request.args
+    response = {}
+
+    if request.method == 'GET':
+        if "action" in args:
+            action = args.get("action")
+        else:
+            action = "getAll"
+        if "id" in args:
+            id = args.get("id")
+    
+        data = purview_catalog_glossary(action, id, {})
         #resp = jsonify(success=True)
+        if "Error" in data:
+            resp = jsonify(data["failure"]["message"])
+            resp.status_code = data["failure"]["status"]
+            return resp
+        else:
+            resp = jsonify(data)
+            return resp
+        #return jsonify(response)  
+    if request.method == 'POST':
+        params = request.json
+
+        #search_text = params["searchText"]
+        #search_type = params["searchType"]
+
+        action = params["action"]
+        src = params["source"]
+        delattr(params, "action")
+        delattr(params, "source")
+        obj = params
+        print(params)
+        result = purview_catalog_glossary(action, src, obj)
+
+        # for item in result:
+        #     atlas_search.append(item)
+    
+        #response["count"] = result.get_count()
+        response["results"] = result
+
+        return jsonify(response)
+    else:
+        resp = jsonify(success=False)
+        resp.status_code = 405
+        return resp
+
+@app.route('/api/cui/purview/discovery', methods=['GET','POST','DELETE'])
+@cross_origin()
+def purview_api_discovery():
+    if request.method == 'GET':
+
+        data = purview_catalog_discovery()
+        resp = jsonify(success=True)
+        #resp = jsonify(data)
+        return resp
+        #return jsonify(response)  
+    if request.method == 'POST':
+        
+        response = {}
+
+        params = request.json
+        search_text = params["searchText"]
+        search_type = params["searchType"]
+
+        result = atlas_api_search(search_text)
+    
+        # for item in result:
+        #     atlas_search.append(item)
+        
+        #response["count"] = result.get_count()
+        response["results"] = result
+
+        return jsonify(response)
+    else:
+        resp = jsonify(success=False)
+        resp.status_code = 405
+        return resp
+
+@app.route('/api/cui/purview/lineage', methods=['GET','POST','DELETE'])
+@cross_origin()
+def purview_api_lineage():
+    if request.method == 'GET':
+
+        data = purview_catalog_lineage()
+        resp = jsonify(success=True)
+        #resp = jsonify(data)
+        return resp
+        #return jsonify(response)  
+    if request.method == 'POST':
+        
+        response = {}
+
+        params = request.json
+        search_text = params["searchText"]
+        search_type = params["searchType"]
+
+        result = atlas_api_search(search_text)
+    
+        # for item in result:
+        #     atlas_search.append(item)
+        
+        #response["count"] = result.get_count()
+        response["results"] = result
+
+        return jsonify(response)
+    else:
+        resp = jsonify(success=False)
+        resp.status_code = 405
+        return resp
+
+@app.route('/api/cui/purview/relationship', methods=['GET','POST','DELETE'])
+@cross_origin()
+def purview_api_relationship():
+    if request.method == 'GET':
+
+        data = purview_catalog_relationship()
+        resp = jsonify(success=True)
+        #resp = jsonify(data)
+        return resp
+        #return jsonify(response)  
+    if request.method == 'POST':
+        
+        response = {}
+
+        params = request.json
+        search_text = params["searchText"]
+        search_type = params["searchType"]
+
+        result = atlas_api_search(search_text)
+    
+        # for item in result:
+        #     atlas_search.append(item)
+        
+        #response["count"] = result.get_count()
+        response["results"] = result
+
+        return jsonify(response)
+    else:
+        resp = jsonify(success=False)
+        resp.status_code = 405
+        return resp
+
+@app.route('/api/cui/purview/types', methods=['GET','POST','DELETE'])
+@cross_origin()
+def purview_api_types():
+    if request.method == 'GET':
+
+        data = purview_catalog_types()
+        # resp = jsonify(success=True)
         resp = jsonify(data)
         return resp
         #return jsonify(response)  
@@ -493,4 +677,4 @@ def purview_api_catalog():
     else:
         resp = jsonify(success=False)
         resp.status_code = 405
-        return resp        
+        return resp

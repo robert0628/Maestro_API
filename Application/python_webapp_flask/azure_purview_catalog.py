@@ -1,3 +1,4 @@
+from logging import exception
 from azure.purview.catalog import PurviewCatalogClient
 from azure.identity import ClientSecretCredential
 from azure.core.exceptions import HttpResponseError
@@ -486,15 +487,71 @@ def purview_catalog_glossary(action, data, obj):
                 response["Error"] = err
                 return response
 
-def purview_catalog_discovery():
+def purview_catalog_discovery(action, data, obj):
     client = purview_client()
-    try:
-        print(client.discovery)
-        response = {}
-        # print out all of your entity definitions
+    discovery = client.discovery
+    response = {}
+
+    if data is None:
+        data = ""
+    if obj is None:
+        obj = {}
+    discovery_actions = [
+        'autoComplete',
+        'browse',
+        'query',
+        'suggest'
+    ]
+
+    if action in discovery_actions:
+        pass
+    else:
+        response["Error"] = "Action not Supported!"
         return response
-    except HttpResponseError as err:
-        print(err)
+
+    if action == 'autoComplete':
+            try:
+                # Get auto complete options. Requires as parameter a JSON object specifying the autocomplete criteria.
+                auto_complete_criteria = obj
+
+                discovery_auto_complete = discovery.auto_complete(auto_complete_criteria)
+                response = discovery_auto_complete
+                return response
+            except HttpResponseError as err:
+                response["Error"] = err
+                return response
+    elif action == 'browse':
+            try:
+                # Browse entities by path or entity type.
+                browse_entity = obj
+
+                discovery_browse = discovery.browse(browse_entity)
+                response = discovery_browse
+                return response
+            except HttpResponseError as err:
+                response["Error"] = err
+                return response
+    elif action == 'query':
+            try:
+                # Gets data using search with a JSON object specifying the search criteria.
+                search_criteria = obj
+                
+                discovery_search = discovery.query(search_criteria)
+                response = discovery_search
+                return response
+            except HttpResponseError as err:
+                response["Error"] = err
+                return response
+    elif action == 'suggest':
+            try:
+                # Get search suggestions by query criteria with a JSON object specifying the suggest criteria.
+                suggest_criteria = obj
+                discovery_suggest = discovery.suggest(suggest_criteria)
+                response = discovery_suggest
+                return response
+            except HttpResponseError as err:
+                response["Error"] = err
+                return response                                
 
 def purview_catalog_lineage():
     client = purview_client()
@@ -525,12 +582,65 @@ def purview_catalog_types():
     except HttpResponseError as err:
         print(err)
 
-def purview_catalog_collection():
+def purview_catalog_collection(action, data, obj):
     client = purview_client()
-    try:
-        response = {}
-        print(client.collection)
-        # print out all of your entity definitions
+    collection = client.collection
+
+    response = {}
+
+    if data is None:
+        data = ""
+    if obj is None:
+        obj = {}
+    collection_actions = [
+        'createUpdateEntityIn',
+        'createUpdateEntitiesIn',
+        'moveEntitiesIn'
+    ]
+
+    if action in collection_actions:
+        pass
+    else:
+        response["Error"] = "Action not Supported!"
         return response
-    except HttpResponseError as err:
-        print(err)
+
+    if action == 'createUpdateEntityIn':
+        try:
+            # Creates or updates an entity to a collection. Existing entity is matched using its unique guid if supplied or by its unique attributes eg: qualifiedName.
+            collection_name = data
+            collection_entity_to_update = obj
+            collection_create = collection.create_or_update(collection_name, collection_entity_to_update)
+            response = collection_create
+            return response
+        except HttpResponseError as err:
+            response["Error"] = err
+            return response
+    elif action == 'createUpdateEntitiesIn':
+        try:
+            # Creates or updates entities in bulk to a collection. Existing entity is matched using its unique guid if supplied or by its unique attributes eg: qualifiedName.
+            collection_name = data
+            collection_entities_to_update = obj
+            collection_update = collection.create_or_update_bulk(collection_name, collection_entities_to_update)
+
+            response = collection_update
+            return response
+        except HttpResponseError as err:
+            response["Error"] = err
+            return response
+    elif action == 'moveEntitiesIn':
+        try:
+            # Move existing entities to the target collection.
+            collection_name = data
+            collection_move_entitites = obj
+            collection_move_entities_obj_ex = {
+                        "entityGuids": [
+                            "str"
+                        ]
+                    }
+            collection_move_entities = collection.move_entities_to_collection(collection_name, collection_move_entitites)
+
+            response = collection_move_entities
+            return response
+        except HttpResponseError as err:
+            response["Error"] = err
+            return response

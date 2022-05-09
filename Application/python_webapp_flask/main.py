@@ -518,38 +518,43 @@ def purview_api_glossary():
         data = purview_catalog_glossary(action, id, {})
         #resp = jsonify(success=True)
         if "Error" in data:
-            resp = jsonify(data["failure"]["message"])
-            resp.status_code = data["failure"]["status"]
-            return resp
+            response = jsonify(data["failure"]["message"])
+            response.status_code = data["failure"]["status"]
+            return response
         else:
-            resp = jsonify(data)
-            return resp
-        #return jsonify(response)  
-    if request.method == 'POST':
-        params = request.json
+            response["results"] = data
+            return jsonify(response)
+    elif request.method == 'POST':
+        json_data = request.json
 
-        #search_text = params["searchText"]
-        #search_type = params["searchType"]
+        if "action" in args:
+            action = args.get("action")
+        elif json_data["action"]:
+            action = json_data["action"]
+            delattr(json_data, "action")
+        else:
+            action = ""
+        if "id" in args:
+            id = args.get("id")
+        elif json_data["source"]:
+            id = json_data["source"]
+            delattr(json_data, "source")
+        else:
+            id = ""
 
-        action = params["action"]
-        src = params["source"]
-        delattr(params, "action")
-        delattr(params, "source")
-        obj = params
-        print(params)
-        result = purview_catalog_glossary(action, src, obj)
+        result = purview_catalog_glossary(action, id, obj)
 
-        # for item in result:
-        #     atlas_search.append(item)
-    
-        #response["count"] = result.get_count()
-        response["results"] = result
-
-        return jsonify(response)
+        if "Error" in result:
+            response = jsonify(result["failure"]["message"])
+            response.status_code = result["failure"]["status"]
+            return response
+        else:
+            response["results"] = result
+            return jsonify(response)
     else:
-        resp = jsonify(success=False)
-        resp.status_code = 405
-        return resp
+        response = jsonify(success=False)
+        response.status_code = 405
+        return response
 
 @app.route('/api/cui/purview/discovery', methods=['GET','POST','DELETE'])
 @cross_origin()
@@ -561,7 +566,7 @@ def purview_api_discovery():
         #resp = jsonify(data)
         return resp
         #return jsonify(response)  
-    if request.method == 'POST':
+    elif request.method == 'POST':
         
         response = {}
 
@@ -593,7 +598,7 @@ def purview_api_lineage():
         #resp = jsonify(data)
         return resp
         #return jsonify(response)  
-    if request.method == 'POST':
+    elif request.method == 'POST':
         
         response = {}
 
@@ -625,7 +630,7 @@ def purview_api_relationship():
         #resp = jsonify(data)
         return resp
         #return jsonify(response)  
-    if request.method == 'POST':
+    elif request.method == 'POST':
         
         response = {}
 
@@ -657,7 +662,7 @@ def purview_api_types():
         resp = jsonify(data)
         return resp
         #return jsonify(response)  
-    if request.method == 'POST':
+    elif request.method == 'POST':
         
         response = {}
 
@@ -678,3 +683,83 @@ def purview_api_types():
         resp = jsonify(success=False)
         resp.status_code = 405
         return resp
+
+@app.route('/api/cui/purview/collection', methods=['POST'])
+@cross_origin()
+def purview_api_collection():
+    action = ""
+    id = ""
+    args = request.args
+    response = {}
+
+    search_criteria_ex = {
+        "facets": [
+            {
+                "count": 0,
+                "facet": "str",
+                "sort": {}
+            }
+        ],
+        "filter": {},
+        "keywords": "str",
+        "limit": 0,
+        "offset": 0,
+        "taxonomySetting": {
+            "assetTypes": [
+                "str"
+            ],
+            "facet": {
+                "count": 0,
+                "facet": "str",
+                "sort": {}
+            }
+        }
+    }
+    suggest_criteria_ex = {
+        "filter": {},
+        "keywords": "str",
+        "limit": 0
+    }
+    browse_entity_ex = {
+        "entityType": "str",
+        "limit": 0,
+        "offset": 0,
+        "path": "str"
+    }
+    auto_complete_criteria_ex = {
+        "filter": {}, 
+        "keywords": "str",
+        "limit": 0
+    }
+    if request.method == 'POST':
+        json_data = request.json
+        if "action" in args:
+            action = args.get("action")
+        elif json_data["action"]:
+            action = json_data["action"]
+            delattr(json_data, "action")
+        else:
+            action = ""
+        if "id" in args:
+            id = args.get("id")
+        elif json_data["source"]:
+            id = json_data["source"]
+            delattr(json_data, "source")
+        else:
+            id = ""
+
+        obj = json_data
+
+        data = purview_catalog_collection(action, id, obj)
+
+        if "Error" in data:
+            response = jsonify(data["failure"]["message"])
+            response.status_code = data["failure"]["status"]
+            return response
+        else:
+            response["results"] = data
+            return jsonify(response)
+    else:
+        response = jsonify(success=False)
+        response.status_code = 405
+        return response

@@ -27,10 +27,10 @@ from .azure_purview_catalog import *
 from apscheduler.schedulers.background import BackgroundScheduler
 from .scripts.connect_ssh import get_new_jsons
 
-get_new_jsons()
-scheduler = BackgroundScheduler()
-scheduler.add_job(func=get_new_jsons, trigger="interval", minutes=10)
-scheduler.start()
+# get_new_jsons()
+# scheduler = BackgroundScheduler()
+# scheduler.add_job(func=get_new_jsons, trigger="interval", minutes=10)
+# scheduler.start()
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -467,13 +467,20 @@ def atlas_search():
 @app.route('/api/cui/purview', methods=['GET','POST','DELETE'])
 @cross_origin()
 def purview_api_catalog():
+    args = request.args
+    json_data = request.json
+    response = {}
+    data = {}
+    operation = ""
+    guid = ""
+    data = json_data
     if request.method == 'GET':
 
         entity = ""
         obj = {}
         guid = ""
-        data = purview_catalog_entity(entity, obj, guid)
-        resp = jsonify(success=True)
+        result = purview_catalog_entity(entity, obj, guid)
+        response = jsonify(success=True)
         #resp = jsonify(data)
         return resp
         #return jsonify(response)  
@@ -487,13 +494,18 @@ def purview_api_catalog():
 
         result = atlas_api_search(search_text)
     
-        # for item in result:
-        #     atlas_search.append(item)
-        
-        #response["count"] = result.get_count()
-        response["results"] = result
-
-        return jsonify(response)
+        if "Error" in result:
+            if type(result["Error"]) == HttpResponseError:
+                response = jsonify(result["Error"].message)
+                response.status_code = result["Error"].status_code
+                return response
+            else:
+                response = jsonify("Operation Failure!")
+                response.status_code = 400
+                return response
+        else:
+            response["results"] = result
+            return jsonify(response)
     else:
         resp = jsonify(success=False)
         resp.status_code = 405
@@ -502,38 +514,41 @@ def purview_api_catalog():
 @app.route('/api/cui/purview/glossary', methods=['GET','POST','DELETE'])
 @cross_origin()
 def purview_api_glossary():
-    action = ""
-    id = ""
     args = request.args
+    json_data = request.json
     response = {}
-
+    data = {}
+    operation = ""
+    guid = ""
+    data = json_data
+    if "operation" in args:
+        operation = args.get("operation")
+    else:
+        operation = ""
     if request.method == 'GET':
-        if "action" in args:
-            action = args.get("action")
+        result = purview_catalog_glossary(operation, data)
+        if result:
+            if "Error" in result:
+                print(result["Error"])
+                response = jsonify("Operation Failure!")
+                response.status_code = 400
+                return response
+            else:
+                response["results"] = result
+                return jsonify(response)
         else:
-            action = "getAll"
-        if "id" in args:
-            id = args.get("id")
-    
-        data = purview_catalog_glossary(action, id, {})
-        #resp = jsonify(success=True)
-        if "Error" in data:
-            response = jsonify(data["failure"]["message"])
-            response.status_code = data["failure"]["status"]
-            return response
-        else:
-            response["results"] = data
+            response["results"] = result
             return jsonify(response)
     elif request.method == 'POST':
         json_data = request.json
 
-        if "action" in args:
-            action = args.get("action")
-        elif json_data["action"]:
-            action = json_data["action"]
-            delattr(json_data, "action")
+        if "operation" in args:
+            operation = args.get("operation")
+        elif json_data["operation"]:
+            operation = json_data["operation"]
+            delattr(json_data, "operation")
         else:
-            action = ""
+            operation = ""
         if "id" in args:
             id = args.get("id")
         elif json_data["source"]:
@@ -541,13 +556,19 @@ def purview_api_glossary():
             delattr(json_data, "source")
         else:
             id = ""
+        
+        data = json_data
 
-        result = purview_catalog_glossary(action, id, obj)
-
+        result = purview_catalog_glossary(operation, data)
         if "Error" in result:
-            response = jsonify(result["failure"]["message"])
-            response.status_code = result["failure"]["status"]
-            return response
+            if type(result["Error"]) == HttpResponseError:
+                response = jsonify(result["Error"].message)
+                response.status_code = result["Error"].status_code
+                return response
+            else:
+                response = jsonify("Operation Failure!")
+                response.status_code = 400
+                return response
         else:
             response["results"] = result
             return jsonify(response)
@@ -559,205 +580,209 @@ def purview_api_glossary():
 @app.route('/api/cui/purview/discovery', methods=['GET','POST','DELETE'])
 @cross_origin()
 def purview_api_discovery():
-    if request.method == 'GET':
-
-        data = purview_catalog_discovery()
-        resp = jsonify(success=True)
-        #resp = jsonify(data)
-        return resp
-        #return jsonify(response)  
-    elif request.method == 'POST':
-        
-        response = {}
-
-        params = request.json
-        search_text = params["searchText"]
-        search_type = params["searchType"]
-
-        result = atlas_api_search(search_text)
-    
-        # for item in result:
-        #     atlas_search.append(item)
-        
-        #response["count"] = result.get_count()
-        response["results"] = result
-
-        return jsonify(response)
+    args = request.args
+    json_data = request.json
+    response = {}
+    data = {}
+    operation = ""
+    guid = ""
+    data = json_data
+    if "operation" in args:
+        operation = args.get("operation")
+    elif data["operation"] is not None:
+        operation = data["operation"]
     else:
-        resp = jsonify(success=False)
-        resp.status_code = 405
-        return resp
+        operation = ""
 
-@app.route('/api/cui/purview/lineage', methods=['GET','POST','DELETE'])
+    if request.method == 'POST':
+        result = purview_catalog_discovery(operation, data) 
+        if result:
+            if "Error" in result:
+                print(result["Error"])
+                response = jsonify("Operation Failure!")
+                response.status_code = 400
+                return response
+            else:
+                response["results"] = result
+                return jsonify(response)
+        else:
+            response = jsonify("Operation Failure!")
+            response.status_code = 400
+            return response
+    else:
+        response = jsonify(success=False)
+        response.status_code = 405
+        return response
+
+@app.route('/api/cui/purview/lineage', methods=['GET'])
 @cross_origin()
 def purview_api_lineage():
+    args = request.args
+    json_data = request.json
+    response = {}
+    data = {}
+    operation = ""
+    guid = ""
+    data = json_data
+
     if request.method == 'GET':
-
-        data = purview_catalog_lineage()
-        resp = jsonify(success=True)
-        #resp = jsonify(data)
-        return resp
-        #return jsonify(response)  
-    elif request.method == 'POST':
-        
-        response = {}
-
-        params = request.json
-        search_text = params["searchText"]
-        search_type = params["searchType"]
-
-        result = atlas_api_search(search_text)
-    
-        # for item in result:
-        #     atlas_search.append(item)
-        
-        #response["count"] = result.get_count()
-        response["results"] = result
-
-        return jsonify(response)
+        result = purview_catalog_lineage(operation, data)
+        if "Error" in result:
+            if type(result["Error"]) == HttpResponseError:
+                response = jsonify(result["Error"].message)
+                response.status_code = result["Error"].status_code
+                return response
+            else:
+                response = jsonify("Operation Failure!")
+                response.status_code = 400
+                return response
+        else:
+            response["results"] = result
+            return jsonify(response)
     else:
-        resp = jsonify(success=False)
-        resp.status_code = 405
-        return resp
+        response = jsonify(success=False)
+        response.status_code = 405
+        return response
 
-@app.route('/api/cui/purview/relationship', methods=['GET','POST','DELETE'])
+@app.route('/api/cui/purview/relationship', methods=['GET','POST', 'PUT', 'DELETE'])
 @cross_origin()
 def purview_api_relationship():
-    if request.method == 'GET':
-
-        data = purview_catalog_relationship()
-        resp = jsonify(success=True)
-        #resp = jsonify(data)
-        return resp
-        #return jsonify(response)  
-    elif request.method == 'POST':
-        
-        response = {}
-
-        params = request.json
-        search_text = params["searchText"]
-        search_type = params["searchType"]
-
-        result = atlas_api_search(search_text)
+    args = request.args
+    response = {}
+    data = {}
+    operation = ""
+    guid = ""
     
-        # for item in result:
-        #     atlas_search.append(item)
+    if request.method == 'GET':
+        result = purview_catalog_relationship(operation, data)
         
-        #response["count"] = result.get_count()
-        response["results"] = result
+        if "Error" in result:
+            if type(result["Error"]) == HttpResponseError:
+                response = jsonify(result["Error"].message)
+                response.status_code = result["Error"].status_code
+                return response
+            else:
+                response = jsonify("Operation Failure!")
+                response.status_code = 400
+                return response
+        else:
+            response["results"] = result
+            return jsonify(response)
+    elif request.method == 'POST':
+        data = request.json
+        result = purview_catalog_relationship(operation, data)
 
-        return jsonify(response)
+        if "Error" in result:
+            if type(result["Error"]) == HttpResponseError:
+                response = jsonify(result["Error"].message)
+                response.status_code = result["Error"].status_code
+                return response
+            else:
+                response = jsonify("Operation Failure!")
+                response.status_code = 400
+                return response
+        else:
+            response["results"] = result
+            return jsonify(response)
+    elif request.method == 'PUT':
+        data = request.json
+        result = purview_catalog_relationship(operation, data)
+
+        if "Error" in result:
+            if type(result["Error"]) == HttpResponseError:
+                response = jsonify(result["Error"].message)
+                response.status_code = result["Error"].status_code
+                return response
+            else:
+                response = jsonify("Operation Failure!")
+                response.status_code = 400
+                return response
+        else:
+            response["results"] = result
+            return jsonify(response)
+    elif request.method == 'DELETE':
+        result = purview_catalog_relationship(operation, data)
+
+        if "Error" in result:
+            if type(result["Error"]) == HttpResponseError:
+                response = jsonify(result["Error"].message)
+                response.status_code = result["Error"].status_code
+                return response
+            else:
+                response = jsonify("Operation Failure!")
+                response.status_code = 400
+                return response
+        else:
+            response["results"] = result
+            return jsonify(response)          
     else:
         resp = jsonify(success=False)
         resp.status_code = 405
         return resp
 
-@app.route('/api/cui/purview/types', methods=['GET','POST','DELETE'])
+@app.route('/api/cui/purview/types', methods=['GET','POST','PUT','DELETE'])
 @cross_origin()
 def purview_api_types():
-    if request.method == 'GET':
-
-        data = purview_catalog_types()
-        # resp = jsonify(success=True)
-        resp = jsonify(data)
-        return resp
-        #return jsonify(response)  
-    elif request.method == 'POST':
-        
-        response = {}
-
-        params = request.json
-        search_text = params["searchText"]
-        search_type = params["searchType"]
-
-        result = atlas_api_search(search_text)
-    
-        # for item in result:
-        #     atlas_search.append(item)
-        
-        #response["count"] = result.get_count()
-        response["results"] = result
-
-        return jsonify(response)
+    args = request.args
+    response = {}
+    if "operation" in args:
+        operation = args.get("operation")
     else:
+        operation = ""
+    data = {}
+    try:
+        if request.method == 'GET':
+            result = purview_catalog_types(operation, data)
+            print(result)
+            if result is not None:
+                if "Error" in result:
+                    print(result["Error"])
+                    response = jsonify("Operation Failure!")
+                    response.status_code = 400
+                    return response
+            else:
+                response = result
+            return jsonify(result)
+        elif request.method == 'POST':
+            data = request.data
+            result = purview_catalog_types(operation, data)
+            response["count"] = result.get_count()
+            response["results"] = result
+
+            return jsonify(response)
+        else:
+            resp = jsonify(success=False)
+            resp.status_code = 405
+            return resp
+    except:
         resp = jsonify(success=False)
-        resp.status_code = 405
+        resp.status_code = 500
         return resp
 
 @app.route('/api/cui/purview/collection', methods=['POST'])
 @cross_origin()
 def purview_api_collection():
-    action = ""
-    id = ""
     args = request.args
+    json_data = request.json
     response = {}
-
-    search_criteria_ex = {
-        "facets": [
-            {
-                "count": 0,
-                "facet": "str",
-                "sort": {}
-            }
-        ],
-        "filter": {},
-        "keywords": "str",
-        "limit": 0,
-        "offset": 0,
-        "taxonomySetting": {
-            "assetTypes": [
-                "str"
-            ],
-            "facet": {
-                "count": 0,
-                "facet": "str",
-                "sort": {}
-            }
-        }
-    }
-    suggest_criteria_ex = {
-        "filter": {},
-        "keywords": "str",
-        "limit": 0
-    }
-    browse_entity_ex = {
-        "entityType": "str",
-        "limit": 0,
-        "offset": 0,
-        "path": "str"
-    }
-    auto_complete_criteria_ex = {
-        "filter": {}, 
-        "keywords": "str",
-        "limit": 0
-    }
+    data = {}
+    operation = ""
+    guid = ""
+    data = json_data
     if request.method == 'POST':
-        json_data = request.json
-        if "action" in args:
-            action = args.get("action")
-        elif json_data["action"]:
-            action = json_data["action"]
-            delattr(json_data, "action")
-        else:
-            action = ""
-        if "id" in args:
-            id = args.get("id")
-        elif json_data["source"]:
-            id = json_data["source"]
-            delattr(json_data, "source")
-        else:
-            id = ""
-
-        obj = json_data
-
-        data = purview_catalog_collection(action, id, obj)
+        result = purview_catalog_collection(operation, data)
 
         if "Error" in data:
-            response = jsonify(data["failure"]["message"])
-            response.status_code = data["failure"]["status"]
-            return response
+            if type(result["Error"]) == HttpResponseError:
+                response = jsonify(result["Error"].message)
+                response.status_code = result["Error"].status_code
+                return response
+            else:
+                response = jsonify("Operation Failure!")
+                response.status_code = 400
+                return response
         else:
-            response["results"] = data
+            response["results"] = result
             return jsonify(response)
     else:
         response = jsonify(success=False)

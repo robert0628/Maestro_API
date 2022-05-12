@@ -1,4 +1,3 @@
-from queue import Empty
 from azure.purview.catalog import PurviewCatalogClient
 from azure.identity import ClientSecretCredential
 from azure.core.exceptions import HttpResponseError
@@ -705,50 +704,7 @@ def purview_catalog_discovery(operation, data):
             getattr(discovery, operation)()
     except HttpResponseError as err:
             response["Error"] = err
-            return response
-    # if operation == 'autocomplete':
-    #         try:
-    #             # Get auto complete options. Requires as parameter a JSON object specifying the autocomplete criteria.
-    #             auto_complete_criteria = data
-
-    #             discovery_auto_complete = discovery.auto_complete(auto_complete_criteria)
-    #             response = discovery_auto_complete
-    #             return response
-    #         except HttpResponseError as err:
-    #             response["Error"] = err
-    #             return response
-    # elif operation == 'browse':
-    #         try:
-    #             # Browse entities by path or entity type.
-    #             browse_entity = data
-
-    #             discovery_browse = discovery.browse(browse_entity)
-    #             response = discovery_browse
-    #             return response
-    #         except HttpResponseError as err:
-    #             response["Error"] = err
-    #             return response
-    # elif operation == 'query':
-    #         try:
-    #             # Gets data using search with a JSON object specifying the search criteria.
-    #             search_criteria = data
-                
-    #             discovery_search = discovery.query(search_criteria)
-    #             response = discovery_search
-    #             return response
-    #         except HttpResponseError as err:
-    #             response["Error"] = err
-    #             return response
-    # elif operation == 'suggest':
-    #         try:
-    #             # Get search suggestions by query criteria with a JSON object specifying the suggest criteria.
-    #             suggest_criteria = data
-    #             discovery_suggest = discovery.suggest(suggest_criteria)
-    #             response = discovery_suggest
-    #             return response
-    #         except HttpResponseError as err:
-    #             response["Error"] = err
-    #             return response                                
+            return response                     
 
 def purview_catalog_lineage(operation, data):
     client = purview_client()
@@ -818,46 +774,6 @@ def purview_catalog_relationship(operation, data):
     except HttpResponseError as err:
             response["Error"] = err
             return response
-
-
-    # if operation == 'get':
-    #     try:
-    #         # Get relationship information between entities by its GUID.  
-    #         relationship_guid = data
-    #         relationship_get = relationship.get(relationship_guid)
-    #         response = relationship_get
-    #         return response
-    #     except HttpResponseError as err:
-    #         response["Error"] = err
-    #         return response
-    # elif operation == 'create':
-    #     try:
-    #         # Create a new relationship between entities.
-    #         relationship_obj = data
-    #         relationship_create = relationship.create(relationship_obj)
-    #         response = relationship_create
-    #         return response
-    #     except HttpResponseError as err:
-    #         response["Error"] = err
-    #         return response
-    # elif operation == 'update':
-    #     try:
-    #         # Return immediate next page lineage info about entity with pagination.
-    #         relationship_obj = data
-    #         relationship_update = relationship.update(relationship_obj)
-    #         response = relationship_update
-    #         return response
-    #     except HttpResponseError as err:
-    #         response["Error"] = err
-    #         return response            
-    # elif operation == 'delete':
-    #     try:
-    #         # Delete a relationship between entities by its GUID.
-    #         relationship_guid = data
-    #         relationship_delete = relationship.delete(relationship_guid)
-    #         response = relationship_delete
-    #         return response
-
 
 def purview_catalog_types(operation, data):
     client = purview_client()
@@ -957,40 +873,3 @@ def purview_catalog_collection(operation, data):
         pass
     except HttpResponseError as err:
         return err
-
-    # if operation == 'create_or_update':
-    #     try:
-    #         # Creates or updates an entity to a collection. Existing entity is matched using its unique guid if supplied or by its unique attributes eg: qualifiedName.
-    #         collection_name = data
-    #         collection_entity_to_update = data
-    #         collection_create = collection.create_or_update(collection_name, collection_entity_to_update)
-    #         response = collection_create
-    #         return response
-    #     except HttpResponseError as err:
-    #         response["Error"] = err
-    #         return response
-    # elif operation == 'create_or_update_bulk':
-    #     try:
-    #         # Creates or updates entities in bulk to a collection. Existing entity is matched using its unique guid if supplied or by its unique attributes eg: qualifiedName.
-    #         collection_name = data
-    #         collection_entities_to_update = data
-    #         collection_update = collection.create_or_update_bulk(collection_name, collection_entities_to_update)
-
-    #         response = collection_update
-    #         return response
-    #     except HttpResponseError as err:
-    #         response["Error"] = err
-    #         return response
-    # elif operation == 'move_entities_to_collection':
-    #     try:
-    #         # Move existing entities to the target collection.
-    #         collection_name = data
-    #         collection_move_entitites = data
-
-    #         collection_move_entities = collection.move_entities_to_collection(collection_name, collection_move_entitites)
-
-    #         response = collection_move_entities
-    #         return response
-    #     except HttpResponseError as err:
-    #         response["Error"] = err
-    #         return response

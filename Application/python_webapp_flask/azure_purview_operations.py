@@ -1,3 +1,59 @@
+scan_client_operations = {
+    'key_vault_connections': [
+        'create',
+        'delete',
+        'get',
+        'list_all'
+    ],
+    'classification_rules':[
+        'create_or_update',
+        'delete',
+        'get',
+        'list_all',
+        'list_versions_by_classification_rule_name',
+        'tag_classification_version'
+    ],
+    'filters':[
+        'create_or_update',
+        'get'
+    ],
+    'scans':[
+        'create_or_update',
+        'delete',
+        'get',
+        'list_by_data_source'
+    ],
+    'scan_result':[
+        'cancel_scan',
+        'list_scan_history',
+        'run_scan'
+    ],
+    'scan_rulesets':[
+        'create_or_update',
+        'delete',
+        'get',
+        'list_all'
+    ],
+    'system_scan_rulesets':[
+        'get',
+        'get_by_version',
+        'get_latest',
+        'list_all',
+        'list_versions_by_data_source'
+    ],
+    'triggers':[
+        'create_trigger',
+        'delete_trigger',
+        'get_trigger'
+    ],
+    'data_sources':[
+        'create_or_update',
+        'delete',
+        'get',
+        'list_all'
+    ]
+}
+
 collection_operations = [
     'create_or_update',
     'create_or_update_bulk',

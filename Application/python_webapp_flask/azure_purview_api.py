@@ -43,14 +43,14 @@ def purview_data_scan(operation, data):
     client = purview_client("scan")
     operation_params = {}
     response = {}
-    operation_params = data
-    scan_cls = operation.split(":")[0]
-    scan_op = operation.split(":")[1]
-    scan_client = getattr(client, scan_cls)
-    method = getattr(scan_client, scan_op)
-    method_details = inspect.signature(method)
-    method_params = list(method_details.parameters)
-    try:     
+    try:
+        operation_params = data
+        scan_cls = operation.split(":")[0]
+        scan_op = operation.split(":")[1]
+        scan_client = getattr(client, scan_cls)
+        method = getattr(scan_client, scan_op)
+        method_details = inspect.signature(method)
+        method_params = list(method_details.parameters)
         if operation_params is not None and len(operation_params) == 0:
             result = method()
             resp_data = [item for item in result]

@@ -2,6 +2,7 @@ from importlib import resources
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from requests.auth import HTTPBasicAuth
+import re
 import json
 import requests
 import yaml
@@ -22,7 +23,7 @@ from .RCAA_functions import *
 from .azure_purview import *
 from .update_nodes import *
 from .azure_purview_atlas import *
-from .azure_purview_catalog import *
+from .azure_purview_api import *
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from .scripts.connect_ssh import get_new_jsons
@@ -492,7 +493,7 @@ def purview_api_entity():
         result = purview_catalog_entity(operation, data)
         if result is not None:
             if "Error" in result:
-                print(result["Error"])
+                print(result) # do something with error message
                 response = jsonify("Operation Failure!")
                 response.status_code = 400
                 return response
@@ -504,7 +505,7 @@ def purview_api_entity():
         result = purview_catalog_entity(operation, data)
         if result is not None:
             if "Error" in result:
-                print(result["Error"])
+                print(result) # do something with error message
                 response = jsonify("Operation Failure!")
                 response.status_code = 400
                 return response
@@ -516,7 +517,7 @@ def purview_api_entity():
         result = purview_catalog_entity(operation, data)
         if result is not None:
             if "Error" in result:
-                print(result["Error"])
+                print(result) # do something with error message
                 response = jsonify("Operation Failure!")
                 response.status_code = 400
                 return response
@@ -549,7 +550,7 @@ def purview_api_glossary():
         result = purview_catalog_glossary(operation, data)
         if result is not None:
             if "Error" in result:
-                print(result["Error"])
+                print(result) # do something with error message
                 response = jsonify("Operation Failure!")
                 response.status_code = 400
                 return response
@@ -561,7 +562,7 @@ def purview_api_glossary():
         result = purview_catalog_glossary(operation, data)
         if result is not None:
             if "Error" in result:
-                print(result["Error"])
+                print(result) # do something with error message
                 response = jsonify("Operation Failure!")
                 response.status_code = 400
                 return response
@@ -573,7 +574,7 @@ def purview_api_glossary():
         result = purview_catalog_glossary(operation, data)
         if result is not None:
             if "Error" in result:
-                print(result["Error"])
+                print(result) # do something with error message
                 response = jsonify("Operation Failure!")
                 response.status_code = 400
                 return response
@@ -607,7 +608,7 @@ def purview_api_discovery():
         result = purview_catalog_discovery(operation, data)
         if result is not None:
             if "Error" in result:
-                print(result["Error"])
+                print(result) # do something with error message
                 response = jsonify("Operation Failure!")
                 response.status_code = 400
                 return response
@@ -640,7 +641,7 @@ def purview_api_lineage():
         result = purview_catalog_lineage(operation, data)
         if result is not None:
             if "Error" in result:
-                print(result["Error"])
+                print(result) # do something with error message
                 response = jsonify("Operation Failure!")
                 response.status_code = 400
                 return response
@@ -673,7 +674,7 @@ def purview_api_relationship():
         result = purview_catalog_relationship(operation, data)
         if result is not None:
             if "Error" in result:
-                print(result["Error"])
+                print(result) # do something with error message
                 response = jsonify("Operation Failure!")
                 response.status_code = 400
                 return response
@@ -685,7 +686,7 @@ def purview_api_relationship():
         result = purview_catalog_relationship(operation, data)
         if result is not None:
             if "Error" in result:
-                print(result["Error"])
+                print(result) # do something with error message
                 response = jsonify("Operation Failure!")
                 response.status_code = 400
                 return response
@@ -697,7 +698,7 @@ def purview_api_relationship():
         result = purview_catalog_relationship(operation, data)
         if result is not None:
             if "Error" in result:
-                print(result["Error"])
+                print(result) # do something with error message
                 response = jsonify("Operation Failure!")
                 response.status_code = 400
                 return response
@@ -730,7 +731,7 @@ def purview_api_types():
         result = purview_catalog_types(operation, data)
         if result is not None:
             if "Error" in result:
-                print(result["Error"])
+                print(result) # do something with error message
                 response = jsonify("Operation Failure!")
                 response.status_code = 400
                 return response
@@ -742,20 +743,19 @@ def purview_api_types():
         result = purview_catalog_types(operation, data)
         if result is not None:
             if "Error" in result:
-                print(result["Error"])
+                print(result) # do something with error message
                 response = jsonify("Operation Failure!")
                 response.status_code = 400
                 return response
             else:
                 response["results"] = result
-            print(response)
         return jsonify(response)
     elif request.method == 'DELETE':
         data = request.json
         result = purview_catalog_types(operation, data)
         if result is not None:
             if "Error" in result:
-                print(result["Error"])
+                print(result) # do something with error message
                 response = jsonify("Operation Failure!")
                 response.status_code = 400
                 return response
@@ -789,13 +789,84 @@ def purview_api_collection():
         result = purview_catalog_collection(operation, data)
         if result is not None:
             if "Error" in result:
-                print(result["Error"])
+                print(result) # do something with error message
                 response = jsonify("Operation Failure!")
                 response.status_code = 400
                 return response
             else:
                 response["results"] = result
         return jsonify(response)         
+    else:
+        response = jsonify(success=False)
+        response.status_code = 405
+        return response
+
+# Azure Purview Scanning Python SDK 1.0.0b2 Official DOC: https://azuresdkdocs.blob.core.windows.net/$web/python/azure-purview-scanning/1.0.0b2/index.html
+@app.route('/api/cui/purview/scan/<cls>', methods=['GET','POST','DELETE'])
+@cross_origin()
+def purview_api_data_scan(cls):
+    allowed_cls = [ cls for cls, ops in scan_client_operations.items()]
+    args = request.args
+    response = {}
+    data = {}
+    if "operation" in args:
+        operation = args.get("operation")
+    else:
+        operation = ""
+
+    if cls in allowed_cls:
+        pass
+    else:
+        response["Error"] = "Endpoint not Supported!"
+        response = jsonify(response)
+        response.status_code = 405
+        return response
+    for c,ops in scan_client_operations.items():
+        if cls == c:
+            if operation in ops:
+                model_op = c + ":" + operation
+                pass
+            else:
+                response["Error"] = "Operation not Supported!"
+                response = jsonify(response)
+                response.status_code = 405
+                return response
+
+    if request.method == 'GET':
+        result = purview_data_scan(model_op, data)
+        if result is not None:
+            if "Error" in result:
+                print(result) # do something with error message
+                response = jsonify("Operation Failure!")
+                response.status_code = 400
+                return response
+            else:
+                response["results"] = result
+        return jsonify(response)
+    elif request.method == 'POST':
+        data = request.json
+        result = purview_data_scan(model_op, data)
+        if result is not None:
+            if "Error" in result:
+                print(result) # do something with error message
+                response = jsonify("Operation Failure!")
+                response.status_code = 400
+                return response
+            else:
+                response["results"] = result
+        return jsonify(response)
+    elif request.method == 'DELETE':
+        data = request.json
+        result = purview_data_scan(model_op, data)
+        if result is not None:
+            if "Error" in result:
+                print(result) # do something with error message
+                response = jsonify("Operation Failure!")
+                response.status_code = 400
+                return response
+            else:
+                response["results"] = result
+        return jsonify(response)
     else:
         response = jsonify(success=False)
         response.status_code = 405

@@ -1,7 +1,7 @@
 import inspect
 import json
 from datetime import datetime
-from msilib.schema import Error
+#from msilib.schema import Error
 
 from azure.identity import ClientSecretCredential
 from azure.core.exceptions import HttpResponseError

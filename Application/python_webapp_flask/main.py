@@ -28,13 +28,14 @@ from .azure_purview_api import *
 from apscheduler.schedulers.background import BackgroundScheduler
 from .scripts.connect_ssh import get_new_jsons
 
-# get_new_jsons()
-# scheduler = BackgroundScheduler()
-# scheduler.add_job(func=get_new_jsons, trigger="interval", minutes=10)
-# scheduler.start()
+get_new_jsons()
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=get_new_jsons, trigger="interval", minutes=10)
+scheduler.start()
 
 app = Flask(__name__)
 cors = CORS(app)
+#app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 cliUrl = "https://71.25.48.225/api/cli"
@@ -114,7 +115,6 @@ def get_contain(clusters):
         k8s_conf = apply_k8s_config(cluster, containers, containers_unique_id, counter)
         k8s_confs.append(k8s_conf)
     return k8s_confs
-
 
 def apply_k8s_config(cluster, containers, containers_unique_id, counter):
     images = []

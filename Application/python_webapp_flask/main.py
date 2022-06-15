@@ -1,5 +1,5 @@
 from importlib import resources
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Blueprint
 from flask_cors import CORS, cross_origin
 from requests.auth import HTTPBasicAuth
 import re
@@ -37,6 +37,9 @@ app = Flask(__name__)
 cors = CORS(app)
 #app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['CORS_HEADERS'] = 'Content-Type'
+
+from .graphQL import module as graphql_module
+app.register_blueprint(graphql_module)
 
 cliUrl = "https://71.25.48.225/api/cli"
 envUrl = "https://71.25.48.225/api/monitoring/connections"

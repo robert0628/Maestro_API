@@ -131,7 +131,7 @@ def get_ips(ip):
     return addresses
 
 def set_device_data(node, protocol, sourcePort):
-    node['port'] = {
+    node['Port'] = {
             "id": "protocoPortObjUUID",
             "name": "protocolport_obj",
             "type": "ProtocolPortObject",

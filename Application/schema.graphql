@@ -31,7 +31,7 @@ type Nodes { domain: String
   objectType: String
   os: String
   status: String
-  port: Port
+  Port: Port
   geo: Geo
   deviceDetails: DeviceDetails }
 

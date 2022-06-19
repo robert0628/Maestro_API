@@ -1,0 +1,6 @@
+
+type AutoGraph {
+    links: [ Links ]
+    nodes : [ Nodes ]
+}
+

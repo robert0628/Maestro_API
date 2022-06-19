@@ -4,7 +4,7 @@ from ariadne.constants import PLAYGROUND_HTML
 
 from flask import Blueprint,request, jsonify
 
-from python_webapp_flask.queries import resolve_livegraph
+from python_webapp_flask import queries
 
 module = Blueprint('index',
     __name__,
@@ -13,10 +13,16 @@ module = Blueprint('index',
 
 
 query = ObjectType("Query")
-query.set_field("livegraph", resolve_livegraph)
+query.set_field("livegraph", queries.resolve_livegraph)
+query.set_field("autograph", queries.resolve_autograph)
 
 
-type_defs = load_schema_from_path("schema.graphql")
+type_defs = load_schema_from_path("graphQL_schema")
+
+type_defs = [
+    load_schema_from_path("schema.graphql"),
+    load_schema_from_path("graphQL_schema"),
+]
 schema = make_executable_schema(
     type_defs, query
 )

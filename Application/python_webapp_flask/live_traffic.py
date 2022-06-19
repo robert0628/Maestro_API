@@ -136,7 +136,7 @@ def set_device_data(node, protocol, sourcePort):
             "name": "protocolport_obj",
             "type": "ProtocolPortObject",
             "protocol": protocol,
-            "port": sourcePort
+            "port": int(sourcePort) if sourcePort else 0
           }
 
     if (node['l_outgoingConn'] == 0 and node['l_incomingConn'] > 0 and node['l_outgoingData'] == 0):

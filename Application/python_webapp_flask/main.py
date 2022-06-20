@@ -313,19 +313,6 @@ def get_containerization_model():
         resp.status_code = 405
         return resp
 
-@app.route('/api/get_mono_2_micro_table', methods=['GET'])
-@cross_origin()
-def get_mono_2_micro_table():
-    if request.method == 'GET':
-        response_data = generate_mono_2_micro()
-        response = []
-        for file in response_data[0]['nodes']:
-            response.append({'Application' : file['id'], 'Complexity score' : 0, 'Size': 0, 'Host' : file['id'].split(':')[0], 'Number of services': 0, 'Number of processes': 0, 'Datacenters': 0, 'Number of dependencies' : 0})
-        return jsonify(response)
-    else:
-        resp = jsonify(success=False)
-        resp.status_code = 405
-        return resp
 
 @app.route('/api/rcaa', methods=["GET"])
 @cross_origin()

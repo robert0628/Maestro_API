@@ -17,7 +17,6 @@ from .live_traffic import *
 from .process_nodes import *
 from .user_interface import *
 from .data_insight import *
-from .roa import *
 from .app_rationalization import *
 from .RCAA_functions import *
 from .azure_purview import *
@@ -325,18 +324,7 @@ def rcaa():
         resp.status_code = 405
         return resp
 
-@app.route('/api/rao', methods=['GET'])
-@cross_origin()
-def rao():
-    if request.method == 'GET':
-        json_file = json.load(open('generated.json'))
-        node_data = [get_nodes(json_file, False, [])]
-        response = create_roa_stucture(json_file, node_data)
-        return jsonify(response)
-    else:
-        resp = jsonify(success=False)
-        resp.status_code = 405
-        return resp
+
 
 @app.route('/api/app_rationalization', methods=['GET'])
 @cross_origin()

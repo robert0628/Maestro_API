@@ -7,7 +7,6 @@ urls = [
     "http://localhost:5555/api/auto_graph",
     "http://localhost:5555/api/hardware_2_cloud",
     "http://localhost:5555/api/get_containerization_model",
-    "http://localhost:5555/api/roa",
     "http://localhost:5555/api/app_rationalization",
     "http://localhost:5555/api/cui"
 ]

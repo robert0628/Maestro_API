@@ -330,7 +330,8 @@ def rcaa():
 @cross_origin()
 def app_rationalization():
     if request.method == 'GET':
-        response = create_app_rationalization_stucture()
+        page_size = request.args.get('pageSize', 1000)
+        response = create_app_rationalization_stucture(page_size)
         return jsonify(response)
     else:
         resp = jsonify(success=False)

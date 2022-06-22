@@ -1,6 +1,6 @@
 from .RCAA_functions import *
 
-fmc_api_applications = 'https://71.25.48.227/api/fmc_config/v1/domain/{}/object/applications?limit=1000&expanded=true'
+fmc_api_applications = 'https://71.25.48.227/api/fmc_config/v1/domain/{}/object/applications?limit={}&expanded=true'
 fmc_api_domain_information = 'https://71.25.48.227/api/fmc_platform/v1/info/domain'
 fmc_api_sla_monitors = 'https://71.25.48.227/api/fmc_config/v1/domain/{}/object/slamonitors?limit=1000&expanded=true'
 
@@ -75,7 +75,7 @@ def create_application_item(data):
       return {}
 
 
-def app_rationalization_add_items(accesstoken, DOMAIN_UUID):
+def app_rationalization_add_items(accesstoken, DOMAIN_UUID, page_size=1000):
     all_applications = []
 
     headers = {
@@ -83,7 +83,7 @@ def app_rationalization_add_items(accesstoken, DOMAIN_UUID):
         'X-auth-access-token': accesstoken
     }
 
-    applications_api = sla_monitor_api = fmc_api_applications.format(DOMAIN_UUID)
+    applications_api = sla_monitor_api = fmc_api_applications.format(DOMAIN_UUID, page_size)
 
     response = requests.get(applications_api, verify = False, headers = headers)
     application_dict = response.json()
@@ -96,11 +96,11 @@ def app_rationalization_add_items(accesstoken, DOMAIN_UUID):
 
     return all_applications
 
-def create_app_rationalization_stucture():
+def create_app_rationalization_stucture(page_size=1000):
 
     accesstoken, refreshtoken, DOMAIN_UUID = generate_token()
 
     app_rationalization_structure = {}
-    app_rationalization_structure["applications"] = app_rationalization_add_items(accesstoken, DOMAIN_UUID)
+    app_rationalization_structure["applications"] = app_rationalization_add_items(accesstoken, DOMAIN_UUID, page_size)
 
     return app_rationalization_structure

@@ -1,4 +1,5 @@
 type Query {
     livegraph: LiveGraph!
     autograph: AutoGraph!
+    apprationalization(limit: Int): AppRationalization!
 }

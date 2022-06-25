@@ -1,0 +1,31 @@
+type Applications { 
+  risk: Float
+  riskScore: String
+  DCIM_tools: String
+  SLA_trend: String
+  appIP: String
+  appId: Int
+  appSize: String
+  applicationTypes: String
+  data_management_systems: String
+  dependencies_downstream_identity: String
+  dependencies_upstream_identity: String
+  description: String
+  duplication: String
+  hardware_tracking_systems: String
+  hosting_options: String
+  migration_scale: String
+  name: String
+  powerExpense: String
+  productivity: Float
+  scalability_adaptability: String
+  security_standards: String
+  supportEstCost: String
+  technical_requirements_bandwidth: String
+  technical_requirements_data: String
+  virtualization_management_system: String }
+
+
+type AppRationalization { 
+    applications: [Applications ] 
+}

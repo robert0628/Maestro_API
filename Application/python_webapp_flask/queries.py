@@ -70,3 +70,19 @@ def resolve_autograph(obj, info):
     return payload
 
 
+
+def resolve_apprationalization(obj, info, limit=None):
+    try:
+        limit = limit if limit else 1000
+
+        response = create_app_rationalization_stucture(page_size=limit)
+        payload = {
+            "success": True,
+            "applications": response['applications']
+        }
+    except Exception as error:
+        payload = {
+            "success": False,
+            "errors": [str(error)]
+        }
+    return payload

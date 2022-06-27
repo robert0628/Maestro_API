@@ -71,7 +71,7 @@ def resolve_autograph(obj, info):
 
 
 
-def resolve_apprationalization(obj, info, limit=None):
+def resolve_app_rationalization(obj, info, limit=None):
     try:
         limit = limit if limit else 1000
 

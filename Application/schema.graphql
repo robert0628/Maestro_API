@@ -2,4 +2,5 @@ type Query {
     livegraph: LiveGraph!
     autograph: AutoGraph!
     app_rationalization(limit: Int): AppRationalization!
+    hardware_2_cloud(limit: Int): HARDWARE_2_CLOUD!
 }

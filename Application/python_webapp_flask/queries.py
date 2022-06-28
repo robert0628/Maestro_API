@@ -7,6 +7,9 @@ from .data_insight import *
 from .app_rationalization import *
 from .RCAA_functions import *
 from .update_nodes import *
+from .util import *
+from vm_recommendations import vm_recommendation
+
 
 def resolve_livegraph(obj, info):
     try:
@@ -79,6 +82,25 @@ def resolve_app_rationalization(obj, info, limit=None):
         payload = {
             "success": True,
             "applications": response['applications']
+        }
+    except Exception as error:
+        payload = {
+            "success": False,
+            "errors": [str(error)]
+        }
+    return payload
+
+def resolve_hardware_2_cloud(obj, info):
+    try:
+        
+        initial_data = json.load(open('generated.json'))
+        response_data = generate_mono_2_micro()
+        applications, services, hosts, databases, groups = augment_data(response_data[0]["nodes"],response_data[0]["links"])
+        response_data[0]["clusters"] = groups
+        response = vm_recommendation(response_data, initial_data)
+        payload = {
+            "success": True,
+            "h2c": response
         }
     except Exception as error:
         payload = {

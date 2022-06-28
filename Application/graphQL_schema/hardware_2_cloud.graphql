@@ -1,0 +1,21 @@
+type Azure { Expected_network_bandwith: String
+  RAM: String
+  Storage: String
+  armRegionName: String
+  armskuName: String
+  currencyCode: String
+  location: String
+  no_of_cores: Int
+  retailPrice: Float
+  tierMinimumUnits: Int
+  unitPrice: Float }
+
+type H2C { CurrentDeviceFunction: String
+  CurrentDeviceName: String
+  CurrentDeviceType: String
+  clusterID: Int
+  Azure: [Azure ] }
+
+type HARDWARE_2_CLOUD { h2c: [H2C ] }
+
+

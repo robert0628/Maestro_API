@@ -108,3 +108,21 @@ def resolve_hardware_2_cloud(obj, info):
             "errors": [str(error)]
         }
     return payload
+
+
+def resolve_containerization_model(obj, info):
+    try:
+        
+        data = generate_mono_2_micro()
+        clusters = get_clusters(data[0]["nodes"])      
+        response = get_contain(clusters)
+        payload = {
+            "success": True,
+            "cm": response
+        }
+    except Exception as error:
+        payload = {
+            "success": False,
+            "errors": [str(error)]
+        }
+    return payload

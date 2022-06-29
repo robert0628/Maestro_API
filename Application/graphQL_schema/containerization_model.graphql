@@ -1,0 +1,20 @@
+type Requests { cpu: String memory: String }
+
+type Limits { cpu: String memory: String }
+
+type Resources { requests: Requests limits: Limits }
+
+type ContainerAppService { containerID: Int
+  containerPort: String
+  image: String
+  name: String
+  resources: Resources }
+
+type CM { appID: Int
+  cluster2appname: String
+  clusterID: Int
+  engine: String
+  host: String
+  containerAppService: [ContainerAppService ] }
+
+type ContainerizationModel { cm: [CM ] }

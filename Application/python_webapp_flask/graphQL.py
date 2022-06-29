@@ -17,6 +17,9 @@ query.set_field("livegraph", queries.resolve_livegraph)
 query.set_field("autograph", queries.resolve_autograph)
 query.set_field("app_rationalization", queries.resolve_app_rationalization)
 query.set_field("hardware_2_cloud", queries.resolve_hardware_2_cloud)
+query.set_field("containerization_model", queries.resolve_containerization_model)
+
+
 
 
 type_defs = load_schema_from_path("graphQL_schema")

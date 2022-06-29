@@ -3,4 +3,5 @@ type Query {
     autograph: AutoGraph!
     app_rationalization(limit: Int): AppRationalization!
     hardware_2_cloud(limit: Int): HARDWARE_2_CLOUD!
+    containerization_model: ContainerizationModel!
 }

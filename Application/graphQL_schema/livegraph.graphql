@@ -33,7 +33,14 @@ type Nodes { domain: String
   status: String
   Port: Port
   geo: Geo
-  deviceDetails: DeviceDetails }
+  deviceDetails: DeviceDetails
+  appID: Int
+  category: String
+  clusterID: Int
+  containerID: Int
+  groupID: Int
+  name: String
+  port: String }
 
 
 type Links { CurrentTafficSize: Int
@@ -42,7 +49,8 @@ type Links { CurrentTafficSize: Int
   target: String
   trafficType: String
   value: Int
-  absolutePath: [String ] }
+  absolutePath: [String ]
+  typeConnect: String }
 
 
 type LiveGraph {

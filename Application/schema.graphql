@@ -5,4 +5,5 @@ type Query {
     hardware_2_cloud(limit: Int): HARDWARE_2_CLOUD!
     containerization_model: ContainerizationModel!
     rcaa: RCAA!
+    mono_2_micro: Mono2Micro!
 }

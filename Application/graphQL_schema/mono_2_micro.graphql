@@ -1,0 +1,36 @@
+type Services { appID: Int
+  containerPort: String
+  hostID: Int
+  id: Int
+  ip: String
+  name: String
+  resources: Resources }
+
+type Hosts { appID: Int
+  id: Int
+  name: String
+  serviceID: Int
+  resources: Resources }
+
+type Clusters { id: Int
+  name: String
+  nodes: [Nodes ]
+  links: [Links ] }
+
+type App { clusterID: Int
+  complexScore: Int
+  datasets: Int
+  dependent: Int
+  hosts: Int
+  id: Int
+  name: String
+  services: Int
+  size: Int }
+
+type Mono2Micro { services: [Services ]
+  nodes: [Nodes ]
+  links: [Links ]
+  hosts: [Hosts ]
+  datasets: [String ]
+  clusters: [Clusters ]
+  app: [App ] }

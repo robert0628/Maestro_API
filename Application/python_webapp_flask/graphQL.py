@@ -19,6 +19,7 @@ query.set_field("app_rationalization", queries.resolve_app_rationalization)
 query.set_field("hardware_2_cloud", queries.resolve_hardware_2_cloud)
 query.set_field("containerization_model", queries.resolve_containerization_model)
 query.set_field("rcaa", queries.resolve_rcaa)
+query.set_field("mono_2_micro", queries.resolve_mono_2_micro)
 
 
 

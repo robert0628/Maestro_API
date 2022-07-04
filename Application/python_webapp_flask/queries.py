@@ -140,3 +140,42 @@ def resolve_rcaa(obj, info):
             "errors": [str(error)]
         }
     return payload
+
+
+def resolve_mono_2_micro(obj, info):
+
+    try:
+        response_data = generate_mono_2_micro()
+        nodes, links = response_data[0]["nodes"], response_data[0]["links"]
+        applications, services, hosts, databases, groups = augment_data(nodes, links)
+
+        response_data[0]["app"] = applications
+        response_data[0]["services"] = services
+        response_data[0]["hosts"] = hosts
+        response_data[0]["datasets"] = databases
+        response_data[0]["clusters"] = groups
+        add_links_applications_hosts(response_data)
+        add_links_hosts_services(response_data)
+        add_links_hosts_datasets(response_data)
+        add_apps_nodes(response_data)
+        add_hosts_nodes(response_data)
+        for elem in response_data[0]['clusters']:
+            for node in elem['nodes']:
+                try:
+                    name = node['name']
+                except:
+                  node['name'] = ''
+        for node in response_data[0]['nodes']:
+            try:
+                name = node['name']
+            except:
+                node['name'] = ''
+        
+        return response_data[0]
+
+    except Exception as error:
+        payload = {
+            "success": False,
+            "errors": [str(error)]
+        }
+    return payload

@@ -1,0 +1,21 @@
+type Children { 
+  applyCondition: String
+  condition: String
+  isRealized: Boolean
+  children: [Children ]
+  type: String
+  value: String }
+
+type Equation { isRealized: Boolean
+  op: String
+  children: [Children ] }
+
+type Items { sourceName: String updatedAt: Int equation: Equation }
+
+type IncidentPassthrough { items: Items }
+
+type RCAA { alertStatus: String
+  incident_ID: String
+  sourceName: String
+  totalOccurences: Int
+  incidentPassthrough: IncidentPassthrough }

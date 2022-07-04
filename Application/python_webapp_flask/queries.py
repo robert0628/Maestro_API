@@ -126,3 +126,17 @@ def resolve_containerization_model(obj, info):
             "errors": [str(error)]
         }
     return payload
+
+
+def resolve_rcaa(obj, info):
+    try:
+        
+        response = return_structure()
+        
+        return response
+    except Exception as error:
+        payload = {
+            "success": False,
+            "errors": [str(error)]
+        }
+    return payload

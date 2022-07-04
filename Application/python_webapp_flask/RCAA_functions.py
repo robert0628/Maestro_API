@@ -142,8 +142,8 @@ def return_structure():
 }
 
     RCAA_response.append(dict_response)
-    RCAA_response.append(dict_response)
-    return RCAA_response
+    # RCAA_response.append(dict_response)
+    return dict_response
 
 with open("RCAA_response.json" , 'w') as jsonfile:
     RCAA_response = return_structure()
